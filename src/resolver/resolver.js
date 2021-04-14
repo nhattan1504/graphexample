@@ -1,26 +1,15 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
-
+const {createUser,login,removeUser,updateUser}=require('./User/user.controller');
+const {posts,approPost,createPost}=require('./Post/post.controller');
 // module.exports={resolvers};
 
 
 
-const books = [
-    {
-        title: 'The Awakening',
-        author: 'Kate Chopin',
-    },
-    {
-        title: 'City of Glass',
-        author: 'Paul Auster',
-    },
-];
+
 const resolvers = {
     Query: {
-        posts: async () => {
-            var listPost = await prisma.post.findMany();
-            return listPost;
-        },
+        posts,
         hello: () => "hiiii",
         getAllUser: async () => {
             try {
@@ -51,17 +40,8 @@ const resolvers = {
         
      },
     Mutation: {
-        createUser: async (_,{ email, name }) => {
-            // console.log(await  prisma.user.create({data:{email:"teo",name:"tan"}}));
-            const user = await prisma.user.create({
-                data: {
-                    email: email,
-                    name: name,
-                }
-            });
-            console.log(user);
-            return user;
-        },
+        createUser,
+        login,
         createAuthor:async(_,{userId})=>{
             let findUser= await prisma.user.findMany({where:{id:userId}});
             if(findUser==[]){
@@ -73,28 +53,10 @@ const resolvers = {
             console.log(author);
             return author;
         },
-        removeUser:async(_,{userId})=>{
-            console.log(userId);
-            let foundAuthor= await prisma.author.findMany({where:{userId:userId}});
-            // console.log(foundAuthor);
-            // await prisma.post.delete({where:{authorId:foundAuthor[0].id}});
-            await prisma.author.delete({where:{id:foundAuthor[0].id}});
-            await prisma.user.delete({where:{id:userId}});
-            console.log("delete success");
-            return "success";
-        },
-        updateUser:async(_,{userId,name,email})=>{
-            try{
-                var userUpdate= await prisma.user.update({where:{id:userId},
-                data:{
-                    email:email,
-                    name:name
-                }});
-                return "success";
-            }catch(err){
-                return err;
-            }
-        }
+        removeUser,
+        updateUser,
+        approPost,
+        createPost
     }
 
 };

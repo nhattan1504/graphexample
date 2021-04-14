@@ -18,7 +18,10 @@ model Post{
   authorId  Int
   content String?
 }
-
+enum Role{
+  ADMIN
+  NORMAL
+}
 model Author{
   id Int @default(autoincrement()) @unique @id
   user User @relation(fields:userId,references:id)
@@ -29,7 +32,9 @@ model Author{
 model User{
   id Int @default(autoincrement()) @unique @id
   email String @unique
+  password  String
   name String
   birthday DateTime?  
+  role Role @default(NORMAL)
   author Author?
 }

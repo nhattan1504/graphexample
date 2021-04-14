@@ -1,4 +1,4 @@
-const { gql } = require("apollo-server");
+const { gql } = require("apollo-server-express");
 
 const typeDefs = gql`
 # Comments in GraphQL strings (such as this one) start with the hash (#) symbol.
@@ -8,6 +8,10 @@ type Post {
   content: String
   # author: Author
   approval:Boolean
+}
+type ReturnLogin{
+  user:User,
+  token:String
 }
 type User{
   email:String!
@@ -29,12 +33,14 @@ type Query {
 }
 
 type Mutation {
-  createUser(email:String,name:String):User
+  createUser(email:String,name:String,password:String,roles:String):User
   createAuthor(userId:Int):Author,
   removeUser(userId:Int):String,
-  updateUser(userId:Int,email:String,name:String):String
+  updateUser(userId:Int,email:String,name:String):String,
+  login(email:String,password:String):ReturnLogin,
+  approPost(postId:Int):String,
+  createPost(content:String):String
 }
-
 `;
 
 module.exports={typeDefs};
