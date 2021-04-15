@@ -22,6 +22,9 @@ type Author{
   user:User
 }
 
+
+
+
 # The "Query" type is special: it lists all of the available queries that
 # clients can execute, along with the return type for each. In this
 # case, the "books" query returns an array of zero or more Books (defined above).
@@ -32,6 +35,9 @@ type Query {
   getInformationAuthor(authorId:Int):Author
 }
 
+type  Subscription{
+  userChange: User
+}
 type Mutation {
   createUser(email:String,name:String,password:String,roles:String):User
   createAuthor(userId:Int):Author,
@@ -43,4 +49,4 @@ type Mutation {
 }
 `;
 
-module.exports={typeDefs};
+module.exports = { typeDefs };

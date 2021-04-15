@@ -1,4 +1,6 @@
+
 const { PrismaClient } = require('@prisma/client');
+const CHANGE_CHANNEL="change";
 const prisma = new PrismaClient();
 const bcrypt = require('bcrypt');
 const JWT = require('jsonwebtoken');
@@ -41,7 +43,7 @@ module.exports = {
         return user;
     },
     login: async (_, { email, password }, context, info) => {
-        console.log(context.userId,context.role);
+        // console.log(context.userId,context.role);
         var {userId}=context;
         if(userId!=null){
             throw new Error("loged in");
@@ -71,19 +73,22 @@ module.exports = {
         console.log("delete success");
         return "success";
     },
-    updateUser: async (_, { userId, name, email }) => {
+    updateUser: async (_, { userId, name, email },context) => {
         try {
-            await prisma.user.update({
+            await context.prisma.user.update({
                 where: { id: userId },
                 data: {
                     email: email,
                     name: name
                 }
             });
+            const{pubsub}=context;
+            pubsub.publish(CHANGE_CHANNEL, { userChange:{name, email }});
             return "success";
         } catch (err) {
             return err;
         }
-    }
+    },
+    
 
 };

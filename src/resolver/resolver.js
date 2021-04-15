@@ -3,6 +3,7 @@ const prisma = new PrismaClient();
 const {createUser,login,removeUser,updateUser}=require('./User/user.controller');
 const {posts,approPost,createPost}=require('./Post/post.controller');
 // module.exports={resolvers};
+const CHANGE_CHANNEL="change";
 
 
 
@@ -57,6 +58,13 @@ const resolvers = {
         updateUser,
         approPost,
         createPost
+    },
+    Subscription:{
+        userChange:{
+            subscribe: (_, __, {pubsub}) => {
+                console.log(pubsub.asyncIterator(CHANGE_CHANNEL));
+                return pubsub.asyncIterator(CHANGE_CHANNEL)}
+        }
     }
 
 };
